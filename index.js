@@ -5,6 +5,10 @@ const { Product, Shop, Stock, DailySale, TodayData } = require('./model.js');
 require('dotenv').config();
 const session = require('express-session');
 const flash = require('express-flash');
+const cors = require('cors');
+
+
+app.use(cors());
 
 
 const app = express();
