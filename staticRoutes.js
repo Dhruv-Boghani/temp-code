@@ -446,7 +446,7 @@ staticRoutes.get('/product-stock-report', async (req, res) => {
 });
 
 staticRoutes.get('/products', (req, res) => {
-    res.render('home'); // Render the product page
+    res.redirect('/add-product');
 });
 
 
