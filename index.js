@@ -10,8 +10,10 @@ const corsConfig = {
   origin: "*",
   Credential: true,
   method: ["GET", "POST", "PUT", "DELETE"],
-
 }
+
+const path = require('path');
+
 
 
 
@@ -26,12 +28,13 @@ app.options("", cors(corsConfig));
 
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true})
-    .then(() => console.log('✅ MongoDB Connected Successfully'))
-    .catch(err => console.error('❌ MongoDB Connection Error:', err));
+.then(() => console.log('✅ MongoDB Connected Successfully'))
+.catch(err => console.error('❌ MongoDB Connection Error:', err));
 
 
 //ejs
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 
 // middleware
