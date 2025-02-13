@@ -6,9 +6,15 @@ require('dotenv').config();
 const session = require('express-session');
 const flash = require('express-flash');
 const cors = require('cors');
+const corsConfig = {
+  origin: "*",
+  Credential: true,
+  method: ["GET", "POST", "PUT", "DELETE"],
+
+}
 
 
-app.use(cors());
+app.use(cors(corsConfig));
 
 
 const app = express();
