@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= shop.name %> Report</title>
+    <link rel="stylesheet" href="/shop-details.css">
+</head>
+<body>
+    <h1>Shop Report for <%= shop.name %></h1>
+
+    <p><strong>Owner:</strong> <%= shop.owner %></p>
+    <p><strong>Address:</strong> <%= shop.address %></p>
+    <p><strong>Mobile Number:</strong> <%= shop.moNumber %></p>
+    <p><strong>Total Investment:</strong> <%= shop.totalInvestment %></p>
+
+    <h2>Products</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Buy Price</th>
+                <th>Sale Price</th>
+                <th>Total Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% shop.allProduct.forEach(product => { %>
+                <tr>
+                    <td><%= product.name %></td>
+                    <td><%= product.buyPrice %></td>
+                    <td><%= product.salePrice %></td>
+                    <td><%= product.totalPic %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <a href="/shop-report">Back to Shop List</a>
+</body>
+</html>

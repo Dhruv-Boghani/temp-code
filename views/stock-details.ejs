@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Details</title>
+    <link rel="stylesheet" href="/stock-details.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> -->
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="mb-4 text-center">Stock Details</h2>
+
+        <!-- Filter Form -->
+        <form action="/view-stock" method="GET">
+            <label for="shop">Select Shop:</label>
+            <select name="shopId" id="shop">
+                <option value="">All Shops</option>
+                <% shops.forEach(shop => { %>
+                    <option value="<%= shop._id %>" <%= (shopId && shop._id.toString() === shopId.toString()) ? 'selected' : '' %>><%= shop.name %></option>
+                <% }) %>
+            </select>
+        
+            <label for="product">Select Product:</label>
+            <select name="productId" id="product">
+                <option value="">All Products</option>
+                <% products.forEach(product => { %>
+                    <option value="<%= product._id %>" <%= (productId && product._id.toString() === productId.toString()) ? 'selected' : '' %>><%= product.name %></option>
+                <% }) %>
+            </select>
+        
+            <button type="submit">Filter</button>
+        </form>
+        
+
+        <!-- Stock Data Table -->
+        <div class="mt-4">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Shop Name</th>  <!-- ✅ New column -->
+                        <th>Product Name</th>
+                        <th>Quantity Bought</th>
+                        <th>Quantity Sold</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% stockData.forEach(stock => { %>
+                        <tr>
+                            <td><%= stock.shopId ? stock.shopId.name : "Unknown Shop" %></td> <!-- ✅ Display Shop Name -->
+                            <td><%= stock.productId ? stock.productId.name : "Unknown Product" %></td>
+                            <td><%= stock.quantityBuy %></td>
+                            <td><%= stock.quantitySale %></td>
+                            <td><%= stock.date %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

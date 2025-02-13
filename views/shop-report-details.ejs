@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Details</title>
+    <link rel="stylesheet" href="/shop-report-details.css">
+</head>
+<body>
+    <h1>Shop Details for <%= shop.shopName %></h1>
+
+    <!-- Shop Details -->
+    <p><strong>Owner:</strong> <%= shop.ownerName %></p>
+    <p><strong>Address:</strong> <%= shop.address %></p>
+
+    <h2>Products:</h2>
+    <ul>
+        <% shop.products.forEach(product => { %>
+            <li><%= product.productName %> (Total Pic: <%= product.totalPic %>)</li>
+        <% }); %>
+    </ul>
+
+    <h2>Shop Reports</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Total Investment</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% reports.forEach(report => { %>
+                <tr>
+                    <td><%= report.date %></td>
+                    <td><%= report.totalInvestment %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+    <br>
+    <a href="/shop-report">Back to Shop List</a>
+</body>
+</html>

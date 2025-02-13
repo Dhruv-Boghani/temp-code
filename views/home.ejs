@@ -1,0 +1,80 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Management</title>
+    <link rel="stylesheet" href="/home.css"> <!-- Link to external CSS -->
+</head>
+<body>
+
+    <main>
+        <% if (messages.message) { %>
+            <div class="alert">
+                <p><%= messages.message %></p>
+            </div>
+        <% } %>
+        
+        <section class="welcome-section">
+            <h1>Welcome to Stock Management</h1>
+            <p>Kanishka Fashion shop’s stock efficiently.</p>
+        </section>
+
+        <section class="stock-summary">
+            <h2>Stock Summary</h2>
+        
+            <!-- Date Selection -->
+            <form action="/" method="GET">
+                <label for="date">Select Date:</label>
+                <input type="date" id="date" name="date" value="<%= selectedDate %>">
+                <button type="submit">Search</button>
+            </form>
+        
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Shop Name</th>
+                        <th>Total Sales Money</th>
+                        <th>Total Spend Money</th>
+                        <th>Total Sales Pic</th>
+                        <th>Total Buy Pic</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (salesData.length > 0) { %>
+                        <% salesData.forEach(sale => { %>
+                            <tr>
+                                <td><%= sale.shopName %></td>
+                                <td>₹<%= sale.totalSalesMoney %></td>
+                                <td>₹<%= sale.totalSpendMoney %></td>
+                                <td><%= sale.totalSalesPic %></td>
+                                <td><%= sale.totalBuyPic %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5">No sales data found for the selected date.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </section>
+        
+        
+        <div class="container">
+            <h1>Shop Stock Management</h1>
+            <div class="buttons">
+                <button onclick="location.href='/add-sales-report'">Add Sales Report</button>
+                <button onclick="location.href='/shop-report'">Show All Shop Reports</button>
+                <button onclick="location.href='/stock-Details'">View Stock Details</button>
+                <button onclick="location.href='/add-product'">Add New Product</button>
+                <button onclick="location.href='/shops'">Shops</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Copyright &copy; <%= new Date().getFullYear() %> Kanishka Fashion | All Rights Reserved By Dhruv Boghani</p>
+    </footer>
+</body>
+</html>

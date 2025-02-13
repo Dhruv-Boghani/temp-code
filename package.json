@@ -1,16 +1,27 @@
 {
-  "name": "tamp-code",
+  "name": "stock",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node app.js",
+    "vercel": "vercel",
+    "build": "echo 'No build step required'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.21.2"
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.18.1",
+    "mongodb": "^6.13.0",
+    "mongoose": "^8.10.0",
+    "node-cron": "^3.0.3",
+    "vercel": "^41.1.0"
   }
 }

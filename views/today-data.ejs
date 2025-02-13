@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today Data</title>
+    <link rel="stylesheet" href="/today-data.css">
+</head>
+<body>
+    <h2>Today's Data</h2>
+
+    <!-- Shop Filter Dropdown -->
+    <form action="/todayData" method="GET">
+        <label for="shop">Filter by Shop:</label>
+        <select name="shopId" id="shop" onchange="this.form.submit()">
+            <option value="">All Shops</option>
+            <% shops.forEach(shop => { %>
+                <option value="<%= shop._id %>" <%= selectedShop == shop._id ? 'selected' : '' %>><%= shop.name %></option>
+            <% }) %>
+        </select>
+    </form>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Shop Name</th>
+                <th>Total Pic</th>
+                <th>Total Money</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% todayRecords.forEach(record => { %>
+                <tr>
+                    <td><%= record.date %></td>
+                    <td><%= record.shopId.name %></td>
+                    <td><%= record.totalpic %></td>
+                    <td><%= record.totalMoney %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    
+    <a href="/">Back to Home</a>
+</body>
+</html>

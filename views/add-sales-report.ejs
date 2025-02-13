@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Sales Report</title>
+    <link rel="stylesheet" href="/add-sales-report.css">
+</head>
+<body>
+    <h1>Add Sales Report</h1>
+
+    <!-- Shop Selection -->
+    <form action="/add-sales-report" method="POST">
+        <label for="shop">Select Shop:</label>
+        <select name="shopId" id="shop" required onchange="fetchProducts()">
+            <option value="">-- Select Shop --</option>
+            <% shops.forEach(shop => { %>
+                <option value="<%= shop._id %>"><%= shop.name %></option>
+            <% }) %>
+        </select>
+
+        <!-- Product Table -->
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity Buy</th>
+                    <th>Quantity Sale</th>
+                </tr>
+            </thead>
+            <tbody id="productTable">
+                <!-- Products will be added dynamically -->
+            </tbody>
+        </table>
+
+        <!-- Additional Info -->
+        <div>
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="totalMoneyCollection">Today's Total Money Collection:</label>
+            <input type="number" id="totalMoneyCollection" name="totalMoneyCollection" min="0" value="0" required>
+
+            <label for="totalMoneySpent">Total Money Spent:</label>
+            <input type="number" id="totalMoneySpent" name="totalMoneySpent" min="0" value="0" required>
+        </div>
+
+        <button type="submit">Submit Report</button>
+    </form>
+
+    <script>
+        async function fetchProducts() {
+            const shopId = document.getElementById("shop").value;
+            if (!shopId) {
+                document.getElementById("productTable").innerHTML = "";
+                return;
+            }
+
+            try {
+                const response = await fetch(`/get-products/${shopId}`);
+                const products = await response.json();
+
+                let tableHTML = "";
+                products.forEach(product => {
+                    tableHTML += `
+                        <tr>
+                            <td>${product.name}</td>
+                            <td><input type="number" name="buy[${product._id}]" min="0" value="0"></td>
+                            <td><input type="number" name="sale[${product._id}]" min="0" value="0"></td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById("productTable").innerHTML = tableHTML;
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        }
+    </script>
+</body>
+</html>

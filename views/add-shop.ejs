@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Shop</title>
+  <link rel="stylesheet" href="/add-shop.css">
+</head>
+<body>
+  <h1>Add a New Shop</h1>
+  <form action="/add-shop" method="POST">
+
+    <label for="shopName">Shop Name:</label>
+    <input type="text" id="shopName" name="shopName" required>
+    
+    <label for="ownerName">Owner Name:</label>
+    <input type="text" id="ownerName" name="ownerName" required>
+    
+    <label for="Address">Address:</label>
+    <input type="text" id="Address" name="Address" required>
+    
+    <label for="mobileNumber">Mobile Number:</label>
+    <input type="text" id="mobileNumber" name="mobileNumber" required>
+
+    <h2>Select Products:</h2>
+    <% products.forEach(product => { %>
+      <div>
+        <input type="checkbox" name="selectedProducts[]" value="<%= product._id %>">
+        <label><%= product.name %></label>
+      </div>
+    <% }) %>
+
+    <button type="submit">Add Shop</button>
+  </form>
+</body>
+</html>

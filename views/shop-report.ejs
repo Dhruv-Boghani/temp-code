@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Report</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/shop-report.css">
+</head>
+<body>
+    <% if (messages.message) { %>
+        <div class="alert">
+            <p><%= messages.message %></p>
+        </div>
+    <% } %>
+    
+
+    <h2>Shop Report</h2>
+
+    <label for="shopSelect">Select Shop:</label>
+    <select id="shopSelect">
+        <option value="">-- Select a Shop --</option>
+    </select>
+
+    <div id="shopDetails" style="display: none;">
+        <h3>Shop Details</h3>
+        <p><strong>Owner:</strong> <span id="owner"></span></p>
+        <p><strong>Address:</strong> <span id="address"></span></p>
+        <p><strong>Total Investment:</strong> ₹<span id="totalInvestment"></span></p>
+
+        <h3>Products</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Buy Price</th>
+                    <th>Sale Price</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody id="productTable"></tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $.get("/shop-details", function (data) {
+                let shopSelect = $("#shopSelect");
+
+                // Populate dropdown
+                data.forEach(shop => {
+                    shopSelect.append(`<option value="${shop._id}" data-shop='${JSON.stringify(shop)}'>${shop.name}</option>`);
+                });
+
+                // Handle shop selection
+                shopSelect.change(function () {
+                    let selectedShop = $(this).find("option:selected").data("shop");
+                    
+                    if (!selectedShop) {
+                        $("#shopDetails").hide();
+                        return;
+                    }
+
+                    $("#owner").text(selectedShop.owner);
+                    $("#address").text(selectedShop.address);
+                    $("#totalInvestment").text(selectedShop.totalInvestment);
+
+                    let productTable = $("#productTable");
+                    productTable.empty();
+
+                    selectedShop.allProduct.forEach(product => {
+                        productTable.append(`
+                            <tr>
+                                <td>${product.name}</td>
+                                <td>₹${product.buyPrice}</td>
+                                <td>₹${product.salePrice}</td>
+                                <td>${product.totalPic}</td>
+                            </tr>
+                        `);
+                    });
+
+                    $("#shopDetails").show();
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
