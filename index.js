@@ -15,14 +15,14 @@ const corsConfig = {
 
 
 
-app.use(cors(corsConfig));
-app.options("", cors(corsConfig));
 
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 const mongoURI = process.env.LOCALHOST_MONGO_URI|| process.env.MONGO_URI;  // For local MongoDB
 
+app.use(cors(corsConfig));
+app.options("", cors(corsConfig));
 
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true})
