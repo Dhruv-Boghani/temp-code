@@ -445,6 +445,10 @@ staticRoutes.get('/product-stock-report', async (req, res) => {
     }
 });
 
+staticRoutes.get('/product', (req, res) => {
+    res.render('home'); // Render the product page
+});
+
 
 
 
