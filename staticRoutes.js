@@ -304,37 +304,37 @@ staticRoutes.post('/add-sales-report', async (req, res) => {
     let oldSalePics = {}; // Object to store oldSalePic per product
     let oldTotalInvestment = 0; // Ensure this is initialized to 0
 
-existingStock.forEach(async stock => {
-    const quantityBuy = Number(stock.quantityBuy) || 0;
-    const quantitySale = Number(stock.quantitySale) || 0;
-    // const buyPrice = Number(stock.buyPrice) || 0;
-    const pro = await Product.findOne({ _id: stock.productId });
-    const buyPrice = Number(pro.buyPrice) || 0;
+    existingStock.forEach(async stock => {
+        const quantityBuy = Number(stock.quantityBuy) || 0;
+        const quantitySale = Number(stock.quantitySale) || 0;
+        // const buyPrice = Number(stock.buyPrice) || 0;
+        const pro = await Product.findOne({ _id: stock.productId });
+        const buyPrice = Number(pro.buyPrice) || 0;
 
 
-    // Log for debugging
-    console.log(`Processing stock for product ${stock.productId}`);
-    console.log(`Quantity Buy: ${quantityBuy}, Quantity Sale: ${quantitySale}, Buy Price: ${buyPrice}`);
+        // Log for debugging
+        console.log(`Processing stock for product ${stock.productId}`);
+        console.log(`Quantity Buy: ${quantityBuy}, Quantity Sale: ${quantitySale}, Buy Price: ${buyPrice}`);
 
-    // Skip invalid entries
-    if (isNaN(quantityBuy) || isNaN(quantitySale) || isNaN(buyPrice)) {
-        console.error("Invalid data found in stock:", stock);
-        return;
-    }
+        // Skip invalid entries
+        if (isNaN(quantityBuy) || isNaN(quantitySale) || isNaN(buyPrice)) {
+            console.error("Invalid data found in stock:", stock);
+            return;
+        }
 
-    // Calculate oldSalePic for each product
-    const productId = stock.productId.toString(); // Ensure it's in string format
-    if (!oldSalePics[productId]) {
-        oldSalePics[productId] = 0; // Initialize if not yet created
-    }
+        // Calculate oldSalePic for each product
+        const productId = stock.productId.toString(); // Ensure it's in string format
+        if (!oldSalePics[productId]) {
+            oldSalePics[productId] = 0; // Initialize if not yet created
+        }
 
-    oldSalePics[productId] += (quantityBuy - quantitySale); // Accumulate for each product
+        oldSalePics[productId] += (quantityBuy - quantitySale); // Accumulate for each product
 
-    // Calculate oldTotalInvestment
-    oldTotalInvestment += (quantityBuy * buyPrice); // Do not subtract sales if you want cumulative investment
-});
+        // Calculate oldTotalInvestment
+        oldTotalInvestment += ((quantityBuy - quantitySale)  * buyPrice); // Do not subtract sales if you want cumulative investment
+    });
 
-console.log("Final Old Total Investment:", oldTotalInvestment);
+    console.log("Final Old Total Investment:", oldTotalInvestment);
 
 
     // After you have the oldSalePics object, you can connect it with the products like this:
@@ -357,21 +357,21 @@ console.log("Final Old Total Investment:", oldTotalInvestment);
         if (!shop) {
             return res.status(404).json({ message: "Shop not found" });
         }
-    
+
         const stockEntries = [];
         const products = await Product.find({ '_id': { $in: Object.keys(buy) } });
         let todayInvestment = 0;
-    
+
         await Promise.all(products.map(async (product) => {
             const buyQuantity = parseInt(buy[product._id]) || 0;
             const saleQuantity = parseInt(sale[product._id]) || 0;
-    
+
             // Calculate new totalPic
             const newTotalPic = Math.max(0, product.totalPic + buyQuantity - saleQuantity);
-    
+
             // Update product's totalPic
             await Product.findByIdAndUpdate(product._id, { totalPic: newTotalPic }, { new: true });
-    
+
             // Create Stock Entry for the current product
             const stock = new Stock({
                 productId: product._id,
@@ -382,18 +382,18 @@ console.log("Final Old Total Investment:", oldTotalInvestment);
             });
             await stock.save();
             stockEntries.push(stock._id);
-    
+
             // Calculate today's investment for this product
             const productInvestment = (buyQuantity * product.buyPrice) - (saleQuantity * product.buyPrice);
             todayInvestment += productInvestment - oldTotalInvestment;
         }));
-    
+
         // Update shop's totalInvestment
         shop.totalInvestment += todayInvestment;
         shop.date = formatDate(date); // Update shop date
-    
+
         await shop.save(); // Save the updated shop
-    
+
         res.status(200).json({ message: "Stock and investment updated successfully", stockEntries });
         // Await the shop save operation after all products are processed
         await shop.save();
