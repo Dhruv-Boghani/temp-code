@@ -394,7 +394,10 @@ staticRoutes.post('/add-sales-report', async (req, res) => {
                     break; // Stop loop once valid data is found
                 }
             }
-            const totalInvestment = (previousTotalInvestment || 0) + (todayInvestment || 0) - (oldTotalInvestment || 0);
+
+            const ppreviousTotalInvestment = shop.totalInvestment || 0; // Ensure it's a number
+            // const totalInvestment = (previousTotalInvestment || 0) + (todayInvestment || 0) - (oldTotalInvestment || 0);
+            const totalInvestment = ppreviousTotalInvestment + todayInvestment;
 
             shop.totalInvestment = totalInvestment; // Update shop's totalInvestment
             shop.date = formatDate(date); // Update shop's date
