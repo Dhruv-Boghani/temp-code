@@ -302,31 +302,37 @@ staticRoutes.post('/add-sales-report', async (req, res) => {
 
     const existingStock = await Stock.find({ shopId: shopId, date: formatDate(date) });
     let oldSalePics = {}; // Object to store oldSalePic per product
-    let oldTotalInvestment = 0;
+    let oldTotalInvestment = 0; // Ensure this is initialized to 0
 
-    existingStock.forEach(stock => {
-        const quantityBuy = Number(stock.quantityBuy) || 0;
-        const quantitySale = Number(stock.quantitySale) || 0;
-        const buyPrice = Number(stock.buyPrice) || 0;
-        const salePrice = Number(stock.salePrice) || 0;
+existingStock.forEach(stock => {
+    const quantityBuy = Number(stock.quantityBuy) || 0;
+    const quantitySale = Number(stock.quantitySale) || 0;
+    const buyPrice = Number(stock.buyPrice) || 0;
 
-        // Validate the values before using them
-        if (isNaN(quantityBuy) || isNaN(quantitySale) || isNaN(buyPrice) || isNaN(salePrice)) {
-            console.error("Invalid data found in stock", stock);
-        }
+    // Log for debugging
+    console.log(`Processing stock for product ${stock.productId}`);
+    console.log(`Quantity Buy: ${quantityBuy}, Quantity Sale: ${quantitySale}, Buy Price: ${buyPrice}`);
 
-        // Calculate oldSalePic for each product (productId is used as the key)
-        const productId = stock.productId.toString(); // Ensure it's in string format for use as a key
-        if (!oldSalePics[productId]) {
-            oldSalePics[productId] = 0; // Initialize if not yet created
-        }
+    // Skip invalid entries
+    if (isNaN(quantityBuy) || isNaN(quantitySale) || isNaN(buyPrice)) {
+        console.error("Invalid data found in stock:", stock);
+        return;
+    }
 
-        oldSalePics[productId] += (quantityBuy - quantitySale); // Accumulate for each product
+    // Calculate oldSalePic for each product
+    const productId = stock.productId.toString(); // Ensure it's in string format
+    if (!oldSalePics[productId]) {
+        oldSalePics[productId] = 0; // Initialize if not yet created
+    }
 
-        // Calculate oldTotalInvestment
-        oldTotalInvestment =  oldTotalInvestment + ((quantityBuy - quantitySale ) * buyPrice);
-    });
-    console.log(oldTotalInvestment);
+    oldSalePics[productId] += (quantityBuy - quantitySale); // Accumulate for each product
+
+    // Calculate oldTotalInvestment
+    oldTotalInvestment += (quantityBuy * buyPrice); // Do not subtract sales if you want cumulative investment
+});
+
+console.log("Final Old Total Investment:", oldTotalInvestment);
+
 
     // After you have the oldSalePics object, you can connect it with the products like this:
     for (const productId in oldSalePics) {
