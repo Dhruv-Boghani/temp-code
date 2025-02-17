@@ -395,7 +395,7 @@ staticRoutes.post('/add-sales-report', async (req, res) => {
 
         await shop.save(); // Save the updated shop
 
-        res.status(200).json({ message: "Stock and investment updated successfully", stockEntries });
+        //res.status(200).json({ message: "Stock and investment updated successfully", stockEntries });
         // Await the shop save operation after all products are processed
         await shop.save();
 
