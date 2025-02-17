@@ -386,7 +386,7 @@ staticRoutes.post('/add-sales-report', async (req, res) => {
 
             // Calculate today's investment for this product
             const productInvestment = (buyQuantity * product.buyPrice) - (saleQuantity * product.buyPrice);
-            todayInvestment += productInvestment;
+            todayInvestment += productInvestment - oldTotalInvestment;
         }));
 
         // Update shop's totalInvestment
