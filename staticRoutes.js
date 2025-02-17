@@ -374,7 +374,7 @@ staticRoutes.post('/add-sales-report', async (req, res) => {
             stockEntries.push(stock._id);
     
             // Calculate today's investment for this product
-            const productInvestment = buyQuantity * product.buyPrice;
+            const productInvestment = (buyQuantity * product.buyPrice) - (saleQuantity * product.buyPrice);
             todayInvestment += productInvestment;
         }));
     
