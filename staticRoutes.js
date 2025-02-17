@@ -308,8 +308,8 @@ existingStock.forEach(stock => {
     const quantityBuy = Number(stock.quantityBuy) || 0;
     const quantitySale = Number(stock.quantitySale) || 0;
     // const buyPrice = Number(stock.buyPrice) || 0;
-    const buyPrice = Product.findOne({ _id: stock.productId }).buyPrice || 0;
-    console.log(Product.findOne({ _id: stock.productId }));
+    const pro = await Product.findOne({ _id: stock.productId });
+    const buyPrice = Number(pro.buyPrice) || 0;
 
 
     // Log for debugging
