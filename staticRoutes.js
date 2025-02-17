@@ -347,30 +347,22 @@ staticRoutes.post('/add-sales-report', async (req, res) => {
         if (!shop) {
             return res.status(404).json({ message: "Shop not found" });
         }
-
+    
         const stockEntries = [];
         const products = await Product.find({ '_id': { $in: Object.keys(buy) } });
-        let todayInvestment = 0
-
+        let todayInvestment = 0;
+    
         await Promise.all(products.map(async (product) => {
             const buyQuantity = parseInt(buy[product._id]) || 0;
             const saleQuantity = parseInt(sale[product._id]) || 0;
-
-            // Fetch the oldSalePic for the specific product from the existingStock
-            const productId = product._id.toString(); // Ensure it's in string format
-            const oldSalePic = oldSalePics[productId] || 0; // Get the oldSalePic for the specific product (default to 0 if not found)
-
-            // Calculate the new totalPic
-            const newTotalPic = Math.max(0, Number(product.totalPic) + buyQuantity - saleQuantity);
-
-            // Use findOneAndUpdate to update the product's totalPic
-            await Product.findOneAndUpdate(
-                { _id: product._id }, // Find product by its _id
-                { $set: { totalPic: newTotalPic } }, // Update totalPic
-                { new: true } // Optionally return the updated document
-            );
-
-            // Create Stock Entry for each product
+    
+            // Calculate new totalPic
+            const newTotalPic = Math.max(0, product.totalPic + buyQuantity - saleQuantity);
+    
+            // Update product's totalPic
+            await Product.findByIdAndUpdate(product._id, { totalPic: newTotalPic }, { new: true });
+    
+            // Create Stock Entry for the current product
             const stock = new Stock({
                 productId: product._id,
                 shopId: shop._id,
@@ -380,31 +372,19 @@ staticRoutes.post('/add-sales-report', async (req, res) => {
             });
             await stock.save();
             stockEntries.push(stock._id);
-
-            // Update shop's total Investment for each product
-            todayInvestment = Number(buyQuantity - saleQuantity) * Number(product.buyPrice) + todayInvestment;
-
-            let previousTotalInvestment = 0; // Default value if no data found
-            for (let i = 1; i <= 7; i++) {
-                const pastDate = formatDate(new Date(new Date(date.split('-').reverse().join('-')).getTime() - (i * 86400000)));
-                const pastData = await Shop.findOne({ _id: shop._id, date: pastDate });
-
-                if (pastData) {
-                    previousTotalInvestment = pastData.totalInvestment; // Found data, update value
-                    break; // Stop loop once valid data is found
-                }
-            }
-            console.log("previousTotalInvestment", previousTotalInvestment);
-            console.log("todayInvestment", todayInvestment);
-            console.log("shop.totalInvestment", shop.totalInvestment);
-            console.log("oldTotalInvestment", oldTotalInvestment);
-            // const totalInvestment = (previousTotalInvestment || 0) + (todayInvestment || 0) + (oldTotalInvestment || 0);
-            const totalInvestment = shop.totalInvestment + (todayInvestment || 0) + (oldTotalInvestment || 0);
-
-            shop.totalInvestment = totalInvestment; // Update shop's totalInvestment
-            shop.date = formatDate(date); // Update shop's date
+    
+            // Calculate today's investment for this product
+            const productInvestment = buyQuantity * product.buyPrice;
+            todayInvestment += productInvestment;
         }));
-
+    
+        // Update shop's totalInvestment
+        shop.totalInvestment += todayInvestment;
+        shop.date = formatDate(date); // Update shop date
+    
+        await shop.save(); // Save the updated shop
+    
+        res.status(200).json({ message: "Stock and investment updated successfully", stockEntries });
         // Await the shop save operation after all products are processed
         await shop.save();
 
