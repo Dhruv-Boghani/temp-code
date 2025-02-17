@@ -304,7 +304,7 @@ staticRoutes.post('/add-sales-report', async (req, res) => {
     let oldSalePics = {}; // Object to store oldSalePic per product
     let oldTotalInvestment = 0; // Ensure this is initialized to 0
 
-existingStock.forEach(stock => {
+existingStock.forEach(async stock => {
     const quantityBuy = Number(stock.quantityBuy) || 0;
     const quantitySale = Number(stock.quantitySale) || 0;
     // const buyPrice = Number(stock.buyPrice) || 0;
