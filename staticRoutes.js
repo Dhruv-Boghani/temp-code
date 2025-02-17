@@ -394,6 +394,10 @@ staticRoutes.post('/add-sales-report', async (req, res) => {
                     break; // Stop loop once valid data is found
                 }
             }
+            console.log("previousTotalInvestment", previousTotalInvestment);
+            console.log("todayInvestment", todayInvestment);
+            console.log("shop.totalInvestment", shop.totalInvestment);
+            console.log("oldTotalInvestment", oldTotalInvestment);
             const totalInvestment = (previousTotalInvestment || 0) + (todayInvestment || 0);
 
             shop.totalInvestment = totalInvestment; // Update shop's totalInvestment
