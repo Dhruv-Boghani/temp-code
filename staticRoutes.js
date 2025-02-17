@@ -331,7 +331,8 @@ staticRoutes.post('/add-sales-report', async (req, res) => {
         oldSalePics[productId] += (quantityBuy - quantitySale); // Accumulate for each product
 
         // Calculate oldTotalInvestment
-        oldTotalInvestment += ((quantityBuy - quantitySale)  * buyPrice); // Do not subtract sales if you want cumulative investment
+        let productoldSales= ((quantityBuy - quantitySale)  * buyPrice) || 0; // Do not subtract sales if you want cumulative investment
+        oldTotalInvestment = oldTotalInvestment + productoldSales; // Accumulate for all products
     });
 
     console.log("Final Old Total Investment:", oldTotalInvestment);
